@@ -78,7 +78,7 @@ async function cmdServe(flags: Record<string, string>): Promise<void> {
   const httpPort = flags.http ? parseInt(flags.http, 10) : undefined;
 
   const config = DataFeeder.loadConfig(configPath);
-  const engine = new DataFeeder(config);
+  const engine = new DataFeeder(config, configPath);
   engine.startSchedules();
 
   const server = createMcpServer(engine);

@@ -149,7 +149,7 @@ function registerDiscoverabilityTools(server: McpServer, engine: DataFeeder): vo
     },
     async ({ template: templateName }, _extra) => {
       try {
-        const { feedName, configPath } = DataFeeder.addFeed(templateName);
+        const { feedName, configPath } = DataFeeder.addFeed(templateName, engine.configPath);
         return {
           content: [{
             type: "text" as const,

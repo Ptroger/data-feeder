@@ -61,9 +61,11 @@ export interface ValidateResult {
 export class DataFeeder {
   private manager: FeedManager;
   private config: DataFeederConfig;
+  readonly configPath?: string;
 
-  constructor(config: DataFeederConfig) {
+  constructor(config: DataFeederConfig, configPath?: string) {
     this.config = config;
+    this.configPath = configPath;
     this.manager = new FeedManager(config);
     this.manager.initialize();
   }
