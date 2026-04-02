@@ -1,0 +1,57 @@
+{
+  "name": "data-feeder",
+  "version": "0.1.0",
+  "description": "Declarative data feeds for AI agents. YAML config → MCP server with caching, scheduling, and auth. Stop writing custom MCP servers for each API.",
+  "type": "module",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "bin": {
+    "data-feeder": "./dist/index.js"
+  },
+  "keywords": [
+    "mcp",
+    "model-context-protocol",
+    "ai-agent",
+    "data-feed",
+    "api-cache",
+    "scheduled-fetch",
+    "x402",
+    "agent-data",
+    "mcp-server",
+    "data-freshness",
+    "remote-agent"
+  ],
+  "scripts": {
+    "build": "tsc",
+    "dev": "tsc --watch",
+    "test": "vitest run",
+    "test:watch": "vitest"
+  },
+  "dependencies": {
+    "@modelcontextprotocol/sdk": "^1.12.0",
+    "chokidar": "^4.0.0",
+    "dotenv": "^16.4.0",
+    "node-cron": "^3.0.3",
+    "yaml": "^2.6.0",
+    "zod": "^3.23.0"
+  },
+  "peerDependencies": {
+    "viem": "^2.0.0"
+  },
+  "peerDependenciesMeta": {
+    "viem": {
+      "optional": true
+    }
+  },
+  "devDependencies": {
+    "@types/node": "^22.0.0",
+    "@types/node-cron": "^3.0.11",
+    "msw": "^2.7.0",
+    "typescript": "^5.8.0",
+    "vitest": "^3.0.0"
+  },
+  "engines": {
+    "node": ">=20"
+  },
+  "license": "MIT"
+}

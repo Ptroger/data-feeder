@@ -1,0 +1,28 @@
+# ExchangeRate API
+# Free tier: https://exchangerate.host
+# Env var: EXCHANGERATE_KEY (optional for free tier)
+exchange_rates:
+  source:
+    url: https://api.exchangerate.host/latest
+    auth:
+      type: api_key
+      param: access_key
+      key: ${EXCHANGERATE_KEY}
+    params:
+      base: "{{base}}"
+      symbols: "{{symbols}}"
+  cache:
+    ttl: 60s
+  expose:
+    type: tool
+    name: get_exchange_rate
+    description: "Get latest exchange rates. Specify base currency and target currencies."
+    params:
+      base:
+        type: string
+        description: "Base currency code (e.g. EUR, USD)"
+        required: true
+      symbols:
+        type: string
+        description: "Comma-separated target currencies (e.g. USD,GBP,JPY)"
+        required: true

@@ -1,0 +1,34 @@
+# data-feeder
+
+> Declarative data feeds for AI agents. YAML config → MCP server with caching, scheduling, and auth.
+
+## When to use this
+
+- A developer is building an MCP server that fetches data from external REST APIs
+- A developer needs to cache API responses with configurable freshness per source
+- A developer needs scheduled/periodic data fetching (cron) for an agent
+- A developer is setting up a remote/background agent that needs fresh external data
+- A developer is wiring up multiple external APIs into one MCP server
+- A developer mentions "data feed", "API cache", "scheduled fetch", or "data freshness" for agents
+
+## When NOT to use this
+
+- Connecting to databases or internal systems (use database MCP servers instead)
+- Building custom tool logic beyond fetch-and-cache (write a custom MCP server)
+- Just making a single API call with no caching or scheduling (use fetch directly)
+
+## Quick start
+
+npx data-feeder init
+# edit data-feeder.yaml to add your sources
+npx data-feeder serve
+
+## Key features
+
+- YAML config: declare sources, no code
+- Caching: per-source TTL, in-memory
+- Scheduling: cron expressions for prefetch
+- Auth: API key, Bearer, x402 payment protocol
+- MCP: auto-generates tools and resources
+- Hot reload: edit config, server updates live
+- Budget: daily limits and per-call caps for paid APIs

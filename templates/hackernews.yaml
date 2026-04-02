@@ -1,0 +1,12 @@
+# Hacker News API (free, no auth)
+hn_top_stories:
+  source:
+    url: https://hacker-news.firebaseio.com/v0/topstories.json
+    auth:
+      type: none
+  cache:
+    ttl: 5m
+  expose:
+    type: tool
+    name: get_hn_top_stories
+    description: "Get the IDs of the current top stories on Hacker News. Returns an array of story IDs sorted by ranking."

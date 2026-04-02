@@ -1,0 +1,27 @@
+# Alpha Vantage stock/forex/crypto data
+# Get your API key at https://www.alphavantage.co/support/#api-key
+# Env var: ALPHAVANTAGE_KEY
+alpha_vantage_quote:
+  source:
+    url: https://www.alphavantage.co/query
+    auth:
+      type: api_key
+      param: apikey
+      key: ${ALPHAVANTAGE_KEY}
+    default_params:
+      function: GLOBAL_QUOTE
+    params:
+      symbol: "{{symbol}}"
+    response:
+      path: "Global Quote"
+  cache:
+    ttl: 30s
+  expose:
+    type: tool
+    name: get_stock_quote
+    description: "Get the latest stock quote including price, volume, and change. Use standard ticker symbols like AAPL, MSFT, GOOGL."
+    params:
+      symbol:
+        type: string
+        description: "Stock ticker symbol (e.g. AAPL, MSFT)"
+        required: true

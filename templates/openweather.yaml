@@ -1,0 +1,31 @@
+# OpenWeather One Call API
+# Get your API key at https://openweathermap.org/api
+# Env var: OPENWEATHER_KEY
+openweather:
+  source:
+    url: https://api.openweathermap.org/data/3.0/onecall
+    auth:
+      type: api_key
+      param: appid
+      key: ${OPENWEATHER_KEY}
+    default_params:
+      units: metric
+      exclude: minutely,alerts
+    params:
+      lat: "{{lat}}"
+      lon: "{{lon}}"
+  cache:
+    ttl: 5m
+  expose:
+    type: tool
+    name: get_weather
+    description: "Get current weather and forecast for a location. Returns temperature, conditions, humidity, wind, and 7-day forecast."
+    params:
+      lat:
+        type: number
+        description: "Latitude (-90 to 90)"
+        required: true
+      lon:
+        type: number
+        description: "Longitude (-180 to 180)"
+        required: true

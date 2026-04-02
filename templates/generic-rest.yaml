@@ -1,0 +1,28 @@
+# Generic REST API template
+# Copy and modify for any REST API
+my_api:
+  source:
+    url: https://api.example.com/v1/data
+    method: GET
+    auth:
+      type: bearer
+      token: ${MY_API_TOKEN}
+    headers:
+      Accept: application/json
+    params:
+      query: "{{query}}"
+    response:
+      path: data.results
+  cache:
+    ttl: 5m
+  timeout: 15s
+  retries: 3
+  expose:
+    type: tool
+    name: search_my_api
+    description: "Search for data from My API"
+    params:
+      query:
+        type: string
+        description: "Search query"
+        required: true
