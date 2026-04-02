@@ -1,4 +1,5 @@
 import { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
+import { z } from "zod";
 import { DataFeeder } from "../core.js";
 import { logger } from "../utils/logger.js";
 
@@ -124,17 +125,50 @@ function registerDiscoverabilityTools(server: McpServer, engine: DataFeeder): vo
     "data_feeder_templates",
     {
       description:
-        "List pre-built feed templates for common APIs (weather, stocks, news). YAML snippets ready to copy into data-feeder.yaml.",
+        "List pre-built feed templates for common APIs (weather, stocks, news). YAML snippets ready to copy into data-feeder.yaml. Use data_feeder_add_feed to apply a template.",
     },
     async () => ({
       content: [{
         type: "text" as const,
         text: JSON.stringify({
           templates: DataFeeder.templates(),
-          hint: "Copy a template's YAML content into the 'feeds:' section of data-feeder.yaml and set the required environment variables.",
+          hint: "Use data_feeder_add_feed to apply a template, or copy its YAML into data-feeder.yaml manually.",
         }, null, 2),
       }],
     }),
+  );
+
+  server.registerTool(
+    "data_feeder_add_feed",
+    {
+      description:
+        "Add a new data feed from a pre-built template. Appends the template to data-feeder.yaml and triggers hot reload so the new feed becomes available immediately. Call data_feeder_templates first to see available templates.",
+      inputSchema: {
+        template: z.string().describe("Template name (e.g. 'openweather', 'hackernews', 'alpha-vantage')"),
+      },
+    },
+    async ({ template: templateName }, _extra) => {
+      try {
+        const { feedName, configPath } = DataFeeder.addFeed(templateName);
+        return {
+          content: [{
+            type: "text" as const,
+            text: JSON.stringify({
+              success: true,
+              feed_name: feedName,
+              config_path: configPath,
+              message: `Added feed "${feedName}" from template "${templateName}". Remember to set the required environment variables. The server will hot-reload the new feed automatically.`,
+            }, null, 2),
+          }],
+        };
+      } catch (error) {
+        const message = error instanceof Error ? error.message : String(error);
+        return {
+          content: [{ type: "text" as const, text: JSON.stringify({ error: message }) }],
+          isError: true,
+        };
+      }
+    },
   );
 }
 

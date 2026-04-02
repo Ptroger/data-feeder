@@ -29,7 +29,7 @@
     "llms.txt"
   ],
   "scripts": {
-    "build": "tsc",
+    "build": "tsc && chmod +x dist/index.js",
     "dev": "tsc --watch",
     "test": "vitest run",
     "test:watch": "vitest",

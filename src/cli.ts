@@ -45,6 +45,8 @@ export async function run(argv: string[]): Promise<void> {
         return cmdDiscover(flags);
       case "query":
         return cmdQuery(flags, argv);
+      case "add":
+        return cmdAdd(flags, argv);
       case "help":
       case "--help":
       case "-h":
@@ -162,6 +164,28 @@ async function cmdQuery(flags: Record<string, string>, argv: string[]): Promise<
   }
 }
 
+function cmdAdd(flags: Record<string, string>, argv: string[]): void {
+  const templateName = argv[1];
+  if (!templateName || templateName.startsWith("--")) {
+    // List available templates
+    const templates = DataFeeder.templates();
+    if (templates.length === 0) {
+      logger.error("No templates available");
+      process.exit(1);
+    }
+    logger.info("Available templates:");
+    for (const t of templates) {
+      logger.info(`  ${t.name}`);
+    }
+    logger.info("\nUsage: data-feeder add <template_name>");
+    return;
+  }
+
+  const { feedName, configPath } = DataFeeder.addFeed(templateName, flags.config);
+  logger.info(`Added feed "${feedName}" from template "${templateName}" to ${configPath}`);
+  logger.info("Don't forget to set the required environment variables in .env");
+}
+
 function cmdHelp(): void {
   console.error(`
 data-feeder — Declarative data feeds for AI agents
@@ -173,15 +197,19 @@ Usage:
   data-feeder list [options]                   List configured feeds
   data-feeder discover [options]               Show feed catalog (JSON)
   data-feeder query <feed> [--param val ...]   Query a feed directly
+  data-feeder add <template>                   Add a feed from a template
 
 Options:
   --config <path>    Path to config file (default: ./data-feeder.yaml)
   --http <port>      Start HTTP transport on given port
 
+Templates:
+  openweather, alpha-vantage, exchangerate, hackernews, generic-rest
+
 Examples:
   npx data-feeder init
   npx data-feeder serve
-  npx data-feeder serve --http 3100
+  npx data-feeder add openweather
   npx data-feeder query weather --lat 48.85 --lon 2.35
 `);
 }

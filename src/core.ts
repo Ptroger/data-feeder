@@ -1,4 +1,4 @@
-import { writeFileSync, existsSync, readdirSync, readFileSync } from "node:fs";
+import { writeFileSync, appendFileSync, existsSync, readdirSync, readFileSync } from "node:fs";
 import { resolve, dirname } from "node:path";
 import { fileURLToPath } from "node:url";
 import { loadConfig, findConfigFile, parseConfigString } from "./config/loader.js";
@@ -326,6 +326,47 @@ ${feedDescriptions}
 - If you need data that isn't available as a feed, suggest adding it via a template from \`templates\`.
 - Check \`_meta.age\` to decide if data is fresh enough for your use case.
 - For frequently needed data, suggest the developer add a scheduled prefetch to reduce latency.`;
+  }
+
+  // --- Feed management ---
+
+  static addFeed(templateName: string, configPath?: string): { feedName: string; configPath: string } {
+    const resolvedConfigPath = configPath ?? findConfigFile();
+
+    // Find the template
+    const templates = DataFeeder.templates();
+    const template = templates.find(
+      (t) => t.name === templateName || t.filename === templateName || t.filename === `${templateName}.yaml`,
+    );
+    if (!template) {
+      const available = templates.map((t) => t.name).join(", ");
+      throw new Error(`Template "${templateName}" not found. Available: ${available}`);
+    }
+
+    // Extract feed name from template (first YAML key that isn't a comment)
+    const feedNameMatch = template.content.match(/^([a-zA-Z]\w*):/m);
+    if (!feedNameMatch) {
+      throw new Error(`Could not parse feed name from template "${templateName}"`);
+    }
+    const feedName = feedNameMatch[1];
+
+    // Check if feed already exists in config
+    const configContent = readFileSync(resolvedConfigPath, "utf-8");
+    if (configContent.includes(`${feedName}:`)) {
+      throw new Error(`Feed "${feedName}" already exists in ${resolvedConfigPath}`);
+    }
+
+    // Indent template content to sit under feeds: (add 2 spaces to each line)
+    const indented = template.content
+      .split("\n")
+      .map((line) => (line.trim() === "" ? "" : `  ${line}`))
+      .join("\n");
+
+    // Append to config file
+    const separator = configContent.endsWith("\n") ? "\n" : "\n\n";
+    appendFileSync(resolvedConfigPath, `${separator}${indented}`, "utf-8");
+
+    return { feedName, configPath: resolvedConfigPath };
   }
 
   // --- Lifecycle ---
