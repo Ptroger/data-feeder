@@ -179,7 +179,11 @@ feeds:
   static templates(): Template[] {
     try {
       const thisDir = dirname(fileURLToPath(import.meta.url));
-      const templatesDir = resolve(thisDir, "../templates");
+      // Works from both src/ (dev) and dist/ (installed)
+      let templatesDir = resolve(thisDir, "../templates");
+      if (!existsSync(templatesDir)) {
+        templatesDir = resolve(thisDir, "../../templates");
+      }
       const files = readdirSync(templatesDir).filter((f) => f.endsWith(".yaml"));
       return files.map((filename) => ({
         name: filename.replace(".yaml", "").replace(/-/g, " "),

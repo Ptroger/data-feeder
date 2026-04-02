@@ -21,11 +21,27 @@
     "data-freshness",
     "remote-agent"
   ],
+  "files": [
+    "dist",
+    "templates",
+    "README.md",
+    "SKILL.md",
+    "llms.txt"
+  ],
   "scripts": {
     "build": "tsc",
     "dev": "tsc --watch",
     "test": "vitest run",
-    "test:watch": "vitest"
+    "test:watch": "vitest",
+    "prepublishOnly": "npm run build && npm test"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Ptroger/data-feeder.git"
+  },
+  "homepage": "https://github.com/Ptroger/data-feeder#readme",
+  "bugs": {
+    "url": "https://github.com/Ptroger/data-feeder/issues"
   },
   "dependencies": {
     "@modelcontextprotocol/sdk": "^1.12.0",
